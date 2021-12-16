@@ -29,7 +29,7 @@ workflows:
   version: 2
   workflow:
     jobs:
-      - build-and-push-image:
+      - build-and-push-images:
           filters:
             branches:
               only:
