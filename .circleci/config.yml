@@ -1,0 +1,38 @@
+version: 2.1
+
+jobs:
+  build-and-push-images:
+    docker:
+      - image: landedhomes/buildpack-deps
+        auth:
+          username: landedhomes
+          password: $DOCKERHUB_PASSWORD
+    working_directory: ~/redis/
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 20.10.6
+      - run:
+          name: Build Docker images
+          command: |
+            cd main/redis && docker build -t landedhomes/redis:main .
+            cd ../redis-commander && docker build landedhomes/redis-commander:main .
+      - run:
+          name: Push Docker images
+          command: |
+            echo $DOCKERHUB_PASSWORD | docker login -u landedhomes --password-stdin
+            docker push landedhomes/redis:main
+            docker push landedhomes/redis-commander:main
+            docker logout
+
+workflows:
+  version: 2
+  workflow:
+    jobs:
+      - build-and-push-image:
+          filters:
+            branches:
+              only:
+                - main
+          context:
+            - docker-hub-creds
