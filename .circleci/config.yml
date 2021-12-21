@@ -16,7 +16,7 @@ jobs:
           name: Build Docker images
           command: |
             cd main/redis && docker build -t landedhomes/redis:main .
-            cd ../redis-commander && docker build landedhomes/redis-commander:main .
+            cd ../redis-commander && docker build -t landedhomes/redis-commander:main .
       - run:
           name: Push Docker images
           command: |
@@ -29,7 +29,7 @@ workflows:
   version: 2
   workflow:
     jobs:
-      - build-and-push-image:
+      - build-and-push-images:
           filters:
             branches:
               only:
